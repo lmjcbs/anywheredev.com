@@ -1,13 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layout, Menu, Breadcrumb } from 'antd';
 import { fetchAirtableData } from './utils/requestOperations';
+import PositionCard from './components/PositionCard';
 import './App.css';
 
 const { Header, Content, Footer } = Layout;
 
 function App() {
+  const [positions, setPositions] = useState([])
+
+  useEffect(() => {
+    (async () => {
+      const positions = await fetchAirtableData();
+      setPositions(positions)
+    })()
+  }, [])
+
   return (
-    <Layout className="layout">
+  <Layout className="layout">
     <Header>
       <div className="logo" />
       <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']}>
@@ -22,7 +32,9 @@ function App() {
         <Breadcrumb.Item>List</Breadcrumb.Item>
         <Breadcrumb.Item>App</Breadcrumb.Item>
       </Breadcrumb>
-      <div className="site-layout-content">Content</div>
+    <div className="site-layout-content">
+        {positions.map(position => <PositionCard values={position}></PositionCard>)}
+    </div>
     </Content>
     <Footer style={{ textAlign: 'center' }}>Hire Remote ©2020</Footer>
   </Layout>
