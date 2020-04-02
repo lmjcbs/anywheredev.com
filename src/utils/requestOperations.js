@@ -6,11 +6,15 @@ const airtable = new AirtablePlus({
     tableName: process.env.REACT_APP_AIRTABLE_TABLE_NAME,
 });
 
-export const fetchAirtableData = async () => {
-  try {
+export const fetchAirtableData = () => (
+  new Promise(async (resolve, reject) => {
+    try {
       const response = await airtable.read({});
-      return response.map(record => record.fields)
-  }catch (error) {
+      const positions = response.map(record => record.fields)
+      resolve(positions)
+    }catch (error) {
       console.log(error)
-  }
-}
+      reject(error)
+    }
+  })
+)
